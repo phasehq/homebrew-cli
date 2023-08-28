@@ -13,7 +13,7 @@ class Phase < Formula
     bin.install "phase"
 
     # Explicitly set permissions post-installation
-    chmod 0755, bin/"phase"
+    chmod +x, bin/"phase"
   end
 
 end
