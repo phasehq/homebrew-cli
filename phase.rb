@@ -9,11 +9,11 @@ class Phase < Formula
     # Rename the binary to "phase" (if needed)
     mv "phase_cli_macos_amd64_1.5.2", "phase" unless File.exist?("phase")
     
+    # Set permissions before installation
+    chmod 0755, "phase"
+    
     # Install the binary
     bin.install "phase"
-
-    # Explicitly set permissions post-installation
-    chmod "+x", bin/"phase"
   end
 
 end
