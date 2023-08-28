@@ -8,12 +8,12 @@ class Phase < Formula
   def install
     # Rename the binary to "phase" (if needed)
     mv "phase_cli_macos_amd64_1.5.2", "phase" unless File.exist?("phase")
-
+    
     # Install the binary
     bin.install "phase"
 
     # Explicitly set permissions post-installation
-    system "chmod", "+x", "#{bin}/phase"
+    chmod 0755, bin/"phase"
   end
 
 end
