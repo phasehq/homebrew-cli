@@ -6,18 +6,14 @@ class Phase < Formula
   version "1.8.0"
 
   def install
-    # Find the phase binary in the extracted directory
-    phase_binary = Dir.glob("*/phase").first
-    internal_dir = Dir.glob("*/_internal").first
+    # Install the phase binary
+    bin.install "macOS-binary/phase"
 
-    # Install the binary
-    bin.install phase_binary if phase_binary
+    # Install the _internal directory in the bin directory
+    bin.install "macOS-binary/_internal"
 
-    # Set execution permissions for the binary
-    chmod 0755, bin/"phase" if phase_binary
-
-    # Install the _internal directory
-    prefix.install internal_dir if internal_dir
+    # Set execution permissions for the phase binary
+    chmod 0755, bin/"phase"
   end
 
   test do
