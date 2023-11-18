@@ -7,10 +7,10 @@ class Phase < Formula
 
   def install
     # Install the phase binary
-    bin.install "macOS-binary/phase"
+    bin.install "phase/phase"
 
     # Install the _internal directory in the bin directory
-    bin.install "macOS-binary/_internal"
+    bin.install "phase/_internal"
 
     # Set execution permissions for the phase binary
     chmod 0755, bin/"phase"
