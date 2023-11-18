@@ -6,26 +6,18 @@ class Phase < Formula
   version "1.8.0"
 
   def install
-    # Define the path for the downloaded zip file
-    zip_file = "#{buildpath}/phase_cli_macos_amd64_#{version}.zip"
+    # Find the phase binary in the extracted directory
+    phase_binary = Dir.glob("*/phase").first
+    internal_dir = Dir.glob("*/_internal").first
 
-    # Extract the contents of the zip file
-    system "unzip", zip_file, "-d", "phase"
+    # Install the binary
+    bin.install phase_binary if phase_binary
 
-    # Move into the extracted directory
-    Dir.chdir("phase/macOS-binary/phase") do
-      # Rename the binary to "phase" (if needed)
-      mv "phase_cli_macos_amd64_#{version}", "phase" unless File.exist?("phase")
-      
-      # Set permissions for the binary
-      chmod 0755, "phase"
+    # Set execution permissions for the binary
+    chmod 0755, bin/"phase" if phase_binary
 
-      # Install the binary
-      bin.install "phase"
-
-      # Install the _internal directory
-      prefix.install "_internal"
-    end
+    # Install the _internal directory
+    prefix.install internal_dir if internal_dir
   end
 
   test do
