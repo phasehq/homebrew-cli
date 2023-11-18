@@ -6,17 +6,14 @@ class Phase < Formula
   version "1.8.0"
 
   def install
-    # Debug: List current directory contents
-    system "ls", "-la"
+    # Define the path for the downloaded zip file
+    zip_file = "#{buildpath}/phase_cli_macos_amd64_#{version}.zip"
 
     # Extract the contents of the zip file
-    system "unzip", "phase_cli_macos_amd64_#{version}.zip", "-d", "phase"
+    system "unzip", zip_file, "-d", "phase"
 
     # Move into the extracted directory
     Dir.chdir("phase/macOS-binary/phase") do
-      # Debug: List current directory contents
-      system "ls", "-la"
-
       # Rename the binary to "phase" (if needed)
       mv "phase_cli_macos_amd64_#{version}", "phase" unless File.exist?("phase")
       
