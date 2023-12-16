@@ -1,0 +1,45 @@
+name: Homebrew Tap Validation
+
+on:
+  push:
+    paths:
+      - "phase.rb"
+  pull_request:
+    paths:
+      - "phase.rb"
+
+jobs:
+  cli-package-test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Homebrew
+        run: |
+          if ! command -v brew &>/dev/null; then
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          fi
+          brew update
+
+      - name: Install CLI from local formula
+        run: |
+          brew install --formula ./phase.rb
+
+      - name: Extract Expected Version
+        id: extract-version
+        run: |
+          version_line=$(grep 'version' phase.rb)
+          version=$(echo $version_line | awk -F '\"' '{print $2}')
+          echo "::set-output name=version::$version"
+
+      - name: Test CLI Version
+        run: |
+          expected_version="${{ steps.extract-version.outputs.version }}"
+          installed_version=$(phase --version)
+          if [ "$installed_version" != "$expected_version" ]; then
+            echo "Version mismatch: expected $expected_version, got $installed_version"
+            exit 1
+          fi
+        shell: bash
