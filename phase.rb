@@ -20,3 +20,4 @@ class Phase < Formula
     system "#{bin}/phase", "--version"
   end
 end
+
