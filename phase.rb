@@ -1,9 +1,9 @@
 class Phase < Formula
   desc "Securely manage your secrets and environment variables with Phase."
   homepage "https://github.com/phasehq/cli"
-  url "https://github.com/phasehq/cli/releases/download/v1.17.3/phase_cli_macos_amd64_1.17.3.zip"
-  sha256 "119b6332e3adf467d45b0528a83403d640cde12c531c09cb3198d779150aec16"
-  version "1.17.3"
+  url "https://github.com/phasehq/cli/releases/download/v1.17.4/phase_cli_macos_amd64_1.17.4.zip"
+  sha256 "00401d47deac1c3d1d38e07573d241e80f905e9b197c18050ee4d1e1cc0c4aee"
+  version "1.17.4"
 
   def install
     # Install the phase binary
