@@ -27,7 +27,7 @@ jobs:
           if [[ "${{ matrix.os }}" == "macos-13" && "$arch" != "x86_64" ]]; then
             echo "Error: Expected x86_64 architecture for macOS 13"
             exit 1
-          elif [[ "${{ matrix.os }}" == "macos-14" && "$arch" != "aarch64" ]]; then
+          elif [[ "${{ matrix.os }}" == "macos-14" && "$arch" != "arm64" ]]; then
             echo "Error: Expected arm64 architecture for macOS 14"
             exit 1
           fi
