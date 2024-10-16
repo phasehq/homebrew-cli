@@ -5,16 +5,30 @@ on:
     paths:
       - "phase.rb"
   pull_request:
-    paths:
-      - "phase.rb"
 
 jobs:
-  cli-package-test:
-    runs-on: macos-latest
+  homebrew-tap-validation:
+    name: Validate on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-13, macos-14]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Validate Architecture
+        run: |
+          arch=$(uname -m)
+          echo "Running on architecture: $arch"
+          if [[ "${{ matrix.os }}" == "macos-13" && "$arch" != "x86_64" ]]; then
+            echo "Error: Expected x86_64 architecture for macOS 13"
+            exit 1
+          elif [[ "${{ matrix.os }}" == "macos-14" && "$arch" != "arm64" ]]; then
+            echo "Error: Expected arm64 architecture for macOS 14"
+            exit 1
+          fi
 
       - name: Install Homebrew
         run: |
@@ -32,7 +46,7 @@ jobs:
         run: |
           version_line=$(grep 'version' phase.rb)
           version=$(echo $version_line | awk -F '\"' '{print $2}')
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Test CLI Version
         run: |
