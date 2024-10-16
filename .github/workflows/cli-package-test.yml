@@ -5,8 +5,8 @@ on:
     paths:
       - "phase.rb"
   pull_request:
-    paths:
-      - "*"
+    # paths:
+    #   - "phase.rb"
 
 jobs:
   homebrew-tap-validation:
