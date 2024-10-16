@@ -9,8 +9,12 @@ on:
       - "phase.rb"
 
 jobs:
-  cli-package-test:
-    runs-on: macos-latest
+  homebrew-tap-validation:
+    name: Validate on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-13, macos-14]
 
     steps:
       - name: Checkout code
@@ -32,7 +36,7 @@ jobs:
         run: |
           version_line=$(grep 'version' phase.rb)
           version=$(echo $version_line | awk -F '\"' '{print $2}')
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Test CLI Version
         run: |
