@@ -35,8 +35,8 @@ jobs:
           if ! command -v brew &>/dev/null; then
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           fi
-          # Pin Homebrew to version 4.6.3
-          cd "$(brew --repo)" && git fetch && git checkout 4.6.3
+          # Use a version that includes the fix for local formula installation
+          cd "$(brew --repo)" && git fetch && git checkout 4.6.4
           brew update
 
       - name: Install CLI from local formula
