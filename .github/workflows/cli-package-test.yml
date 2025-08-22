@@ -3,7 +3,7 @@ name: Homebrew Tap Validation
 on:
   push:
     paths:
-      - "phase.rb"
+      - "Formula/phase.rb"
   pull_request:
 
 jobs:
@@ -39,12 +39,12 @@ jobs:
 
       - name: Install CLI from local formula
         run: |
-          brew install --formula ./phase.rb
+          brew install --formula ./Formula/phase.rb
 
       - name: Extract Expected Version
         id: extract-version
         run: |
-          version_line=$(grep 'version' phase.rb)
+          version_line=$(grep 'version' Formula/phase.rb)
           version=$(echo $version_line | awk -F '\"' '{print $2}')
           echo "version=$version" >> $GITHUB_OUTPUT
 
