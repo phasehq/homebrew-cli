@@ -3,7 +3,7 @@ name: Homebrew Tap Validation
 on:
   push:
     paths:
-      - "phase.rb"
+      - "Formula/phase.rb"
   pull_request:
 
 jobs:
@@ -35,16 +35,18 @@ jobs:
           if ! command -v brew &>/dev/null; then
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           fi
+          # Use a version that includes the fix for local formula installation
+          cd "$(brew --repo)" && git fetch && git checkout 4.6.4
           brew update
 
       - name: Install CLI from local formula
         run: |
-          brew install --formula ./phase.rb
+          brew install --formula ./Formula/phase.rb
 
       - name: Extract Expected Version
         id: extract-version
         run: |
-          version_line=$(grep 'version' phase.rb)
+          version_line=$(grep 'version' Formula/phase.rb)
           version=$(echo $version_line | awk -F '\"' '{print $2}')
           echo "version=$version" >> $GITHUB_OUTPUT
 
