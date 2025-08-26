@@ -2,9 +2,12 @@ name: Homebrew Tap Validation
 
 on:
   push:
+    branches: [main]
     paths:
       - "phase.rb"
   pull_request:
+    paths:
+      - "phase.rb"
 
 jobs:
   homebrew-tap-validation:
@@ -12,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13, macos-14]
+        os: [macos-13, macos-14, macos-15]
 
     steps:
       - name: Checkout code
@@ -25,8 +28,8 @@ jobs:
           if [[ "${{ matrix.os }}" == "macos-13" && "$arch" != "x86_64" ]]; then
             echo "Error: Expected x86_64 architecture for macOS 13"
             exit 1
-          elif [[ "${{ matrix.os }}" == "macos-14" && "$arch" != "arm64" ]]; then
-            echo "Error: Expected arm64 architecture for macOS 14"
+          elif [[ "${{ matrix.os }}" =~ "macos-1[45]" && "$arch" != "arm64" ]]; then
+            echo "Error: Expected arm64 architecture for ${{ matrix.os }}"
             exit 1
           fi
 
@@ -37,9 +40,17 @@ jobs:
           fi
           brew update
 
-      - name: Install CLI from local formula
+      - name: Install CLI from local formula (PRs only)
+        if: github.event_name == 'pull_request'
         run: |
-          brew install --formula ./phase.rb
+          mkdir -p "$(brew --repo phasehq/cli)/Formula"
+          cp ./phase.rb "$(brew --repo phasehq/cli)/Formula/phase.rb"
+          brew install --build-from-source phasehq/cli/phase
+
+      - name: Install CLI from tap (main branch only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          brew install phasehq/cli/phase
 
       - name: Extract Expected Version
         id: extract-version
