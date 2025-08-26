@@ -2,9 +2,12 @@ name: Homebrew Tap Validation
 
 on:
   push:
+    branches: [main]
     paths:
       - "phase.rb"
   pull_request:
+    paths:
+      - "phase.rb"
 
 jobs:
   homebrew-tap-validation:
@@ -37,9 +40,17 @@ jobs:
           fi
           brew update
 
-      - name: Install CLI from local formula
+      - name: Install CLI from local formula (PRs only)
+        if: github.event_name == 'pull_request'
         run: |
-          brew install --formula ./phase.rb
+          mkdir -p "$(brew --repo phasehq/cli)/Formula"
+          cp ./phase.rb "$(brew --repo phasehq/cli)/Formula/phase.rb"
+          brew install --build-from-source phasehq/cli/phase
+
+      - name: Install CLI from tap (main branch only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          brew install phasehq/cli/phase
 
       - name: Extract Expected Version
         id: extract-version
