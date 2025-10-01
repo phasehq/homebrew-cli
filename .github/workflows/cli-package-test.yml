@@ -61,6 +61,8 @@ jobs:
 
       - name: Test CLI Version
         run: |
+          echo "Runner architecture:"
+          uname -a
           expected_version="${{ steps.extract-version.outputs.version }}"
           installed_version=$(phase --version)
           if [ "$installed_version" != "$expected_version" ]; then
