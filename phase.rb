@@ -5,12 +5,12 @@ class Phase < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/phasehq/cli/releases/download/v1.20.0/phase_cli_macos_arm64_1.20.0.zip"
+      url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_macos_arm64_#{version}.zip"
       sha256 "0401ab98941364b6dc3447f02362bde619144fed289fab0340801871dd15971d"
     end
 
     on_intel do
-      url "https://github.com/phasehq/cli/releases/download/v1.20.0/phase_cli_macos_amd64_1.20.0.zip"
+      url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_macos_amd64_#{version}.zip"
       sha256 "86c8644df6453a26f9380c5bc33566445973ec58f179547fa4575aca0f3f0d6b"
     end
   end
