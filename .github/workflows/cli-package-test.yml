@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13, macos-14, macos-15, macos-26]
+        os: [macos-14, macos-15, macos-15-intel, macos-26]
 
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
         run: |
           arch=$(uname -m)
           echo "Running on architecture: $arch"
-          if [[ "${{ matrix.os }}" == "macos-13" && "$arch" != "x86_64" ]]; then
+          if [[ "${{ matrix.os }}" == "macos-15-intel" && "$arch" != "x86_64" ]]; then
             echo "Error: Expected x86_64 architecture for macOS 13"
             exit 1
           elif [[ "${{ matrix.os }}" =~ "macos-1[45]" && "$arch" != "arm64" ]]; then
