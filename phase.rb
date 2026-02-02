@@ -1,17 +1,17 @@
 class Phase < Formula
   desc "Securely manage your secrets and environment variables with Phase."
   homepage "https://github.com/phasehq/cli"
-  version "1.21.2"
+  version "1.21.3"
 
   on_macos do
     on_arm do
       url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_macos_arm64_#{version}.zip"
-      sha256 "029e10c6531b33a7750227d7e7ee05f257f766d805e7e36a983b45ba3b9f8f9d"
+      sha256 "5810fa35e1a2c62628a06b293b20f9cd4dc693210295851efb134971266fb444"
     end
 
     on_intel do
       url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_macos_amd64_#{version}.zip"
-      sha256 "bac807756f584dd6f064cacf3cdbae889b901f25f747974332c8efd19b45d26e"
+      sha256 "02abc2aa71d3e9be9fa2a74af3cd81fb7f349f81485c343b1b9a58b750fd7a78"
     end
   end
 
