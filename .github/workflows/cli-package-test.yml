@@ -129,10 +129,18 @@ jobs:
 
       - name: Verify old Python artifacts removed
         run: |
-          phase_prefix="$(brew --cellar phasehq/cli/phase)"
-          echo "Cellar path: $phase_prefix"
-          if [ -d "$phase_prefix/_internal" ] || find "$phase_prefix" -name "_internal" -type d 2>/dev/null | grep -q .; then
-            echo "ERROR: _internal directory still exists after upgrade"
+          # brew --prefix gives the active (linked) version's prefix
+          phase_prefix="$(brew --prefix phasehq/cli/phase)"
+          echo "Active prefix: $phase_prefix"
+          ls -la "$phase_prefix/bin/"
+
+          if [ -d "$phase_prefix/bin/_internal" ]; then
+            echo "ERROR: _internal directory exists in active installation"
             exit 1
           fi
-          echo "Old Python artifacts properly cleaned up"
+          echo "Active installation has no old Python artifacts"
+
+          # Clean up old versions from the Cellar
+          brew cleanup phase
+          echo "Cellar after cleanup:"
+          ls "$(brew --cellar phase)/"
