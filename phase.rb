@@ -1,29 +1,22 @@
 class Phase < Formula
   desc "Securely manage your secrets and environment variables with Phase."
   homepage "https://github.com/phasehq/cli"
-  version "1.21.3"
+  version "2.0.0"
 
   on_macos do
     on_arm do
-      url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_macos_arm64_#{version}.zip"
-      sha256 "5810fa35e1a2c62628a06b293b20f9cd4dc693210295851efb134971266fb444"
+      url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_#{version}_darwin_arm64"
+      sha256 "c0e9824b192dac0e4b2cbf80412638e6790bc95f36387362869a31fac21a8184"
     end
 
     on_intel do
-      url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_macos_amd64_#{version}.zip"
-      sha256 "02abc2aa71d3e9be9fa2a74af3cd81fb7f349f81485c343b1b9a58b750fd7a78"
+      url "https://github.com/phasehq/cli/releases/download/v#{version}/phase_cli_#{version}_darwin_amd64"
+      sha256 "ae3dea0fdedfb4dcff24de4de96a1e0070e45935f90ead3857e08218dba0af25"
     end
   end
 
   def install
-    # Install the phase binary
-    bin.install "phase/phase"
-
-    # Install the _internal directory in the bin directory
-    bin.install "phase/_internal"
-
-    # Set execution permissions for the phase binary
-    chmod 0755, bin/"phase"
+    bin.install Dir["phase_cli_*"].first => "phase"
   end
 
   test do

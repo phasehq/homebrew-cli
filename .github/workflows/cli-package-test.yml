@@ -26,7 +26,7 @@ jobs:
           arch=$(uname -m)
           echo "Running on architecture: $arch"
           if [[ "${{ matrix.os }}" == "macos-15-intel" && "$arch" != "x86_64" ]]; then
-            echo "Error: Expected x86_64 architecture for macOS 13"
+            echo "Error: Expected x86_64 architecture for macOS Intel"
             exit 1
           elif [[ "${{ matrix.os }}" =~ "macos-1[45]" && "$arch" != "arm64" ]]; then
             echo "Error: Expected arm64 architecture for ${{ matrix.os }}"
@@ -43,9 +43,9 @@ jobs:
       - name: Install CLI from local formula (PRs only)
         if: github.event_name == 'pull_request'
         run: |
-          mkdir -p "$(brew --repo phasehq/cli)/Formula"
-          cp ./phase.rb "$(brew --repo phasehq/cli)/Formula/phase.rb"
-          brew install --build-from-source phasehq/cli/phase
+          brew tap phasehq/cli
+          cp ./phase.rb "$(brew --repo phasehq/cli)/phase.rb"
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install phasehq/cli/phase
 
       - name: Install CLI from tap (main branch only)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -56,7 +56,7 @@ jobs:
         id: extract-version
         run: |
           version_line=$(grep 'version' phase.rb)
-          version=$(echo $version_line | awk -F '\"' '{print $2}')
+          version=$(echo $version_line | awk -F '"' '{print $2}')
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Test CLI Version
@@ -70,3 +70,69 @@ jobs:
             exit 1
           fi
         shell: bash
+
+  homebrew-upgrade-test:
+    name: Upgrade test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    if: github.event_name == 'pull_request'
+    strategy:
+      matrix:
+        os: [macos-14, macos-15-intel]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Homebrew
+        run: |
+          if ! command -v brew &>/dev/null; then
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          fi
+          brew update
+
+      - name: Install old version from published tap
+        run: |
+          brew install phasehq/cli/phase
+          echo "Installed version: $(phase --version)"
+
+      - name: Verify old version is 1.x
+        run: |
+          version=$(phase --version)
+          if [[ ! "$version" =~ ^1\. ]]; then
+            echo "Expected 1.x version, got: $version"
+            exit 1
+          fi
+          echo "Old version confirmed: $version"
+
+      - name: Upgrade to new version from PR
+        run: |
+          cp ./phase.rb "$(brew --repo phasehq/cli)/phase.rb"
+          HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade phasehq/cli/phase
+
+      - name: Extract Expected Version
+        id: extract-version
+        run: |
+          version_line=$(grep 'version' phase.rb)
+          version=$(echo $version_line | awk -F '"' '{print $2}')
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Verify upgrade succeeded
+        run: |
+          expected="${{ steps.extract-version.outputs.version }}"
+          actual=$(phase --version)
+          echo "Expected: $expected"
+          echo "Actual: $actual"
+          if [ "$actual" != "$expected" ]; then
+            echo "Version mismatch after upgrade!"
+            exit 1
+          fi
+
+      - name: Verify old Python artifacts removed
+        run: |
+          phase_prefix="$(brew --cellar phasehq/cli/phase)"
+          echo "Cellar path: $phase_prefix"
+          if [ -d "$phase_prefix/_internal" ] || find "$phase_prefix" -name "_internal" -type d 2>/dev/null | grep -q .; then
+            echo "ERROR: _internal directory still exists after upgrade"
+            exit 1
+          fi
+          echo "Old Python artifacts properly cleaned up"
