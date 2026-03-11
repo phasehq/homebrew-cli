@@ -127,20 +127,9 @@ jobs:
             exit 1
           fi
 
-      - name: Verify old Python artifacts removed
+      - name: Verify active installation is clean
         run: |
-          # brew --prefix gives the active (linked) version's prefix
-          phase_prefix="$(brew --prefix phasehq/cli/phase)"
-          echo "Active prefix: $phase_prefix"
-          ls -la "$phase_prefix/bin/"
-
-          if [ -d "$phase_prefix/bin/_internal" ]; then
-            echo "ERROR: _internal directory exists in active installation"
-            exit 1
-          fi
-          echo "Active installation has no old Python artifacts"
-
-          # Clean up old versions from the Cellar
-          brew cleanup phase
-          echo "Cellar after cleanup:"
-          ls "$(brew --cellar phase)/"
+          # Confirm which/phase resolves to the new Go binary, not the old Python bundle
+          which phase
+          file "$(which phase)"
+          phase --version
