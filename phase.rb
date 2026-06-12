@@ -5,21 +5,21 @@
 class Phase < Formula
   desc "Securely manage your secrets and environment variables with Phase."
   homepage "https://github.com/phasehq/cli"
-  version "2.2.0"
+  version "2.3.0"
   license "GPL-3.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/phasehq/cli/releases/download/v2.2.0/phase_cli_2.2.0_darwin_amd64"
-      sha256 "5662a83a5cd1de6fee6372dc618bc7f5110881679283926f0fc1fdd8aea3b135"
+      url "https://github.com/phasehq/cli/releases/download/v2.3.0/phase_cli_2.3.0_darwin_amd64"
+      sha256 "c55091d97ec9cbf43f4471bcf99c63e5c95b290f1618e5b126c25ede6d56902c"
 
       define_method(:install) do
         bin.install Dir.glob("phase_cli_*").first => "phase"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/phasehq/cli/releases/download/v2.2.0/phase_cli_2.2.0_darwin_arm64"
-      sha256 "0a29af3546edfadd2778cb3039f8e08568d98fdc3701674882cb3425a36c2567"
+      url "https://github.com/phasehq/cli/releases/download/v2.3.0/phase_cli_2.3.0_darwin_arm64"
+      sha256 "934c31465488c1c6d25aff2de6d18b55174d7c5f5b0852a105a04031d7e4b764"
 
       define_method(:install) do
         bin.install Dir.glob("phase_cli_*").first => "phase"
@@ -29,15 +29,15 @@ class Phase < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/phasehq/cli/releases/download/v2.2.0/phase_cli_2.2.0_linux_amd64"
-      sha256 "60c3a811dcd9d27ed0c150a6c609cb8d0e11e5bd04051f6e450d3f64f97b7fcf"
+      url "https://github.com/phasehq/cli/releases/download/v2.3.0/phase_cli_2.3.0_linux_amd64"
+      sha256 "5ccedc9153563077c75370916c70ca7ad0b6e324b99177a6d5c5e3767f97956f"
       define_method(:install) do
         bin.install Dir.glob("phase_cli_*").first => "phase"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/phasehq/cli/releases/download/v2.2.0/phase_cli_2.2.0_linux_arm64"
-      sha256 "27b2cbfe842bed3593c902881416cbc4bb4eb5563cb79417195271034c2374d5"
+      url "https://github.com/phasehq/cli/releases/download/v2.3.0/phase_cli_2.3.0_linux_arm64"
+      sha256 "d321bacc405d6c8358b86158e2b5b9a12b096fc4e36793466cd2b1ac9ff4c4e4"
       define_method(:install) do
         bin.install Dir.glob("phase_cli_*").first => "phase"
       end
