@@ -5,15 +5,19 @@ on:
     branches: [main]
     paths:
       - "phase.rb"
+      - ".github/workflows/cli-package-test.yml"
   pull_request:
     paths:
       - "phase.rb"
+      - ".github/workflows/cli-package-test.yml"
+  workflow_dispatch:
 
 jobs:
   homebrew-tap-validation:
     name: Validate on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-15, macos-15-intel, macos-26, macos-26-intel, macos-latest]
 
@@ -38,15 +42,15 @@ jobs:
           fi
           brew update
 
-      - name: Install CLI from local formula (PRs only)
-        if: github.event_name == 'pull_request'
+      - name: Install CLI from local formula (PRs and non-main branches)
+        if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
         run: |
           mkdir -p "$(brew --repo phasehq/cli)/Formula"
           cp ./phase.rb "$(brew --repo phasehq/cli)/Formula/phase.rb"
           brew install --build-from-source phasehq/cli/phase
 
       - name: Install CLI from tap (main branch only)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         run: |
           brew install phasehq/cli/phase
 
